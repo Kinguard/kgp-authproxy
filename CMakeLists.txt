@@ -15,7 +15,7 @@ include_directories (
 add_definitions( -std=c++11 )
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 
-target_link_libraries( ${PROJECT_NAME} -ljsoncpp ${LIBJSONCPP_LDFLAGS} ${LIBUTILS_LDFLAGS} )
+target_link_libraries( ${PROJECT_NAME} -lcrypt -ljsoncpp ${LIBJSONCPP_LDFLAGS} ${LIBUTILS_LDFLAGS} )
 
 install( TARGETS opi-authproxy DESTINATION sbin )
 

@@ -22,10 +22,13 @@ private:
 	void HandleHello(UnixStreamClientSocketPtr sock, const string& line);
 
 	void SendReply(UnixStreamClientSocketPtr sock, const Json::Value& val);
+	void SendError(UnixStreamClientSocketPtr sock);
 
 	void HandlePassdb(UnixStreamClientSocketPtr sock, const string& line);
 	void HandleUserdb(UnixStreamClientSocketPtr sock, const string& line);
 	void HandleLookup(UnixStreamClientSocketPtr sock, const string& line);
+
+	string HashPassword(const string& pwd);
 
 	Json::FastWriter writer;
 
