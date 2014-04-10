@@ -137,7 +137,15 @@ void AuthProxy::HandlePassdb(UnixStreamClientSocketPtr sock, const string &line)
 
 		if( resp["status"]["value"] == 0 )
 		{
-			reply["password"]= this->HashPassword( resp["identifiers"][(Json::Value::UInt)0]["password"].asString() );
+			string hpwd = this->HashPassword( resp["identifiers"][(Json::Value::UInt)0]["password"].asString() );
+
+			if ( hpwd == "" )
+			{
+				this->SendError(sock);
+				return;
+			}
+
+			reply["password"]= hpwd;
 		}
 		else
 		{
