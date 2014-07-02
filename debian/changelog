@@ -1,3 +1,9 @@
+opi-authproxy (0.2) testing; urgency=low
+
+  * Overriding creating of rc.d startup links.
+
+ -- PA Nilsson <pa@openproducts.se>  Wed, 02 Jul 2014 08:09:47 +0200
+
 opi-authproxy (0.1) testing; urgency=low
 
   * Initial Release.
