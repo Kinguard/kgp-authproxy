@@ -1,3 +1,9 @@
+opi-authproxy (0.3) testing; urgency=low
+
+  * Fix pidfile writing.
+
+ -- Tor Krill <tor@openproducts.se>  Thu, 17 Jul 2014 16:18:59 +0200
+
 opi-authproxy (0.2) testing; urgency=low
 
   * Overriding creating of rc.d startup links.
