@@ -9,7 +9,7 @@
 using namespace Utils;
 using namespace std::placeholders;
 
-ProxyApp::ProxyApp(): DaemonApplication("authproxy","/var/run","root","root")
+ProxyApp::ProxyApp(): DaemonApplication("opi-authproxy","/var/run","root","root")
 {
 }
 
