@@ -542,9 +542,11 @@ void AuthProxy::Dispatch(SocketPtr con)
 	char buf[1024];
 	size_t rd;
 
-	if( (rd = sock->Read( buf, sizeof(buf) ) ) > 0  )
+	while( (rd = sock->Read( buf, sizeof(buf) - 1 ) ) > 0  )
 	{
 		vector<string> lines;
+
+		buf[rd] = 0;
 
 		String::Split(buf, lines, "\n");
 		for(auto& line: lines)

@@ -1,3 +1,9 @@
+opi-authproxy (1.0) vili; urgency=low
+
+  * Fix login bug "Authproxy does not always allow login" #56
+
+ -- Tor Krill <tor@openproducts.se>  Fri, 15 Aug 2014 12:19:45 +0200
+
 opi-authproxy (0.3) testing; urgency=low
 
   * Fix pidfile writing.
