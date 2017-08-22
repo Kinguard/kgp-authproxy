@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 
 include( FindPkgConfig )
 pkg_check_modules ( LIBUTILS REQUIRED libutils>=1.0 )
-pkg_check_modules ( LIBJSONCPP REQUIRED libjsoncpp>=1.0 )
+pkg_check_modules ( LIBJSONCPP REQUIRED jsoncpp>=1.0 )
 
 
 aux_source_directory(. SRC_LIST)

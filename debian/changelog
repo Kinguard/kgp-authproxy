@@ -1,3 +1,10 @@
+opi-authproxy (1.1) vili; urgency=medium
+
+  * Update dependencies for jsoncpp
+  * Add pkg-config requirement to package
+
+ -- Tor Krill <tor@openproducts.se>  Tue, 22 Aug 2017 11:10:07 +0200
+
 opi-authproxy (1.0) vili; urgency=low
 
   * Fix login bug "Authproxy does not always allow login" #56
