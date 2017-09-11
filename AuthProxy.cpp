@@ -26,6 +26,8 @@ using namespace Utils::Net;
  *
  *Use with caution!
  *
+ * TODO: Replace with libopi/Secop implementation
+ *
  */
 class SecopHelper
 {
@@ -429,7 +431,8 @@ string AuthProxy::HashPassword(const string &pwd)
 
 void AuthProxy::SendReply(UnixStreamClientSocketPtr sock, const Json::Value &val)
 {
-	string res = "O"+writer.write(val)+"\n";
+	string res = "O"+writer.write(val);
+	//logg << Logger::Debug << "Write response ["<< res << "]" << lend;
 	sock->Write( res.c_str(), res.size() );
 }
 
@@ -440,7 +443,7 @@ void AuthProxy::SendError(UnixStreamClientSocketPtr sock)
 
 void AuthProxy::HandlePassdb(UnixStreamClientSocketPtr sock, const string &line)
 {
-	logg << Logger::Debug << "Passdb lookup " << line << lend;
+	//logg << Logger::Debug << "Passdb lookup " << line << lend;
 
 	SecopHelper sec;
 
@@ -483,7 +486,7 @@ void AuthProxy::HandlePassdb(UnixStreamClientSocketPtr sock, const string &line)
  */
 void AuthProxy::HandleUserdb(UnixStreamClientSocketPtr sock, const string &line)
 {
-	logg << Logger::Debug << "Userdb lookup " << line << lend;
+	//logg << Logger::Debug << "Userdb lookup " << line << lend;
 
 	Json::Value reply;
 

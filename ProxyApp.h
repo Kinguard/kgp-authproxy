@@ -9,7 +9,7 @@
 
 using namespace std;
 
-#define SOCKPATH "/tmp/authproxy"
+#define SOCKPATH "/run/kgp/authproxy.socket"
 
 class ProxyApp : public Utils::DaemonApplication
 {
