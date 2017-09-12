@@ -3,7 +3,7 @@ opi-authproxy (1.2) vili; urgency=medium
   * Update socket path
   * Cleanup some debug prints
 
- -- Tor Krill <tor@keep>  Mon, 11 Sep 2017 18:54:55 +0000
+ -- Tor Krill <tor@openproducts.se>  Mon, 11 Sep 2017 18:54:55 +0000
 
 opi-authproxy (1.1) vili; urgency=medium
 
