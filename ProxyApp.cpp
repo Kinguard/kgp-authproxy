@@ -4,6 +4,7 @@
 #include <libutils/Logger.h>
 #include <libutils/FileUtils.h>
 #include <functional>
+#include <syslog.h>
 
 #include <unistd.h>
 
@@ -28,10 +29,18 @@ void ProxyApp::SigHup(int signo)
 
 void ProxyApp::Startup()
 {
+	// Divert logger to syslog
+	openlog( "opi-authproxy", LOG_PERROR, LOG_DAEMON);
+	logg.SetOutputter( [](const string& msg){ syslog(LOG_INFO, "%s",msg.c_str());});
+	logg.SetLogName("");
+
+	logg << Logger::Info << "Starting" << lend;
 
 	Utils::SigHandler::Instance().AddHandler(SIGTERM, std::bind(&ProxyApp::SigTerm, this, _1) );
 	Utils::SigHandler::Instance().AddHandler(SIGINT, std::bind(&ProxyApp::SigTerm, this, _1) );
 	Utils::SigHandler::Instance().AddHandler(SIGHUP, std::bind(&ProxyApp::SigHup, this, _1) );
+
+	this->options.AddOption( Option('D', "debug", Option::ArgNone,"0","Debug logging") );
 
 	try
 	{
@@ -55,6 +64,11 @@ void ProxyApp::Startup()
 
 void ProxyApp::Main()
 {
+	if( this->options["debug"] == "1" )
+	{
+		logg << Logger::Info << "Increase logging to debug level "<<lend;
+		logg.SetLevel(Logger::Debug);
+	}
 	proxy->Run();
 }
 

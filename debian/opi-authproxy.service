@@ -1,0 +1,10 @@
+[Unit]
+Description=IMAP authentication proxy
+Requires=secop.service
+
+[Service]
+Type=forking
+PIDFile=/var/run/opi-authproxy.pid
+ExecStart=/usr/sbin/opi-authproxy -d
+
+# No install target since opi-authproxy is started by opi-control

@@ -16,9 +16,9 @@ int main(int argc, char** argv)
 	int ret = 0;
 	try
 	{
-		ProxyApp app;
+		logg.SetLevel(Logger::Info);
 
-		logg.SetLevel(Logger::Debug);
+		ProxyApp app;
 
 		ret = app.Start(argc, argv);
 

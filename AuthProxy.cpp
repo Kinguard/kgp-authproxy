@@ -4,6 +4,8 @@
 #include <libutils/String.h>
 #include <libutils/Logger.h>
 
+#include <libopi/Secop.h>
+
 #include <json/json.h>
 
 #include <sys/types.h>
@@ -19,356 +21,6 @@ using namespace std;
 using namespace Utils;
 using namespace Utils::Net;
 
-
-/* Wrapper to communicate with Secop
- *
- *NOTE: Not yet fully tested and no unittests written!
- *
- *Use with caution!
- *
- * TODO: Replace with libopi/Secop implementation
- *
- */
-class SecopHelper
-{
-public:
-	SecopHelper(): tid(0), secop("/tmp/secop")
-	{
-
-	}
-
-	bool Init(const string& pwd)
-	{
-		Json::Value cmd(Json::objectValue);
-
-		cmd["cmd"]= "init";
-		cmd["pwd"]=pwd;
-
-		Json::Value rep = this->DoCall(cmd);
-
-		return this->CheckReply(rep);
-	}
-
-	int Status()
-	{
-		Json::Value cmd(Json::objectValue);
-
-		cmd["cmd"]="status";
-
-		Json::Value rep = this->DoCall(cmd);
-
-		if( this->CheckReply(rep) )
-		{
-			return rep["server"]["state"].asInt();
-		}
-		return 0;
-	}
-
-	bool SockAuth()
-	{
-		Json::Value cmd(Json::objectValue);
-
-		cmd["cmd"]= "auth";
-		cmd["type"]="socket";
-
-		Json::Value rep = this->DoCall(cmd);
-
-		return this->CheckReply(rep);
-	}
-
-	bool PlainAuth(const string& user, const string& pwd)
-	{
-		Json::Value cmd(Json::objectValue);
-
-		cmd["cmd"]		= "auth";
-		cmd["type"]		= "plain";
-		cmd["username"]	= user;
-		cmd["password"]	= pwd;
-
-		Json::Value rep = this->DoCall(cmd);
-
-		return this->CheckReply(rep);
-	}
-
-	bool CreateUser(const string& user, const string& pwd)
-	{
-		Json::Value cmd(Json::objectValue);
-
-		cmd["cmd"]		= "createuser";
-		cmd["username"]	= user;
-		cmd["password"]	= pwd;
-
-		Json::Value rep = this->DoCall(cmd);
-
-		return this->CheckReply(rep);
-	}
-
-	bool RemoveUser(const string& user)
-	{
-		Json::Value cmd(Json::objectValue);
-
-		cmd["cmd"]		= "removeuser";
-		cmd["username"]	= user;
-
-		Json::Value rep = this->DoCall(cmd);
-
-		return this->CheckReply(rep);
-	}
-
-
-	vector<string> GetUsers()
-	{
-		Json::Value cmd(Json::objectValue);
-
-		cmd["cmd"]= "getusers";
-
-		Json::Value rep = this->DoCall(cmd);
-
-		vector<string> users;
-		if( this->CheckReply(rep) )
-		{
-			for(auto x: rep["users"])
-			{
-				users.push_back(x.asString() );
-			}
-		}
-		return users;
-	}
-
-	vector<string> GetServices(const string& user)
-	{
-		Json::Value cmd(Json::objectValue);
-
-		cmd["cmd"]		= "getservices";
-		cmd["username"]	= user;
-
-		Json::Value rep = this->DoCall(cmd);
-
-		vector<string> services;
-		if( this->CheckReply(rep) )
-		{
-			for(auto x: rep["services"])
-			{
-				services.push_back(x.asString() );
-			}
-		}
-		return services;
-	}
-
-	bool AddService(const string& user, const string& service)
-	{
-		Json::Value cmd(Json::objectValue);
-
-		cmd["cmd"]			= "addservice";
-		cmd["username"]		= user;
-		cmd["servicename"]	= service;
-
-		Json::Value rep = this->DoCall(cmd);
-
-		return this->CheckReply(rep);
-	}
-
-	bool RemoveService(const string& user, const string& service)
-	{
-		Json::Value cmd(Json::objectValue);
-
-		cmd["cmd"]			= "removeservice";
-		cmd["username"]		= user;
-		cmd["servicename"]	= service;
-
-		Json::Value rep = this->DoCall(cmd);
-
-		return this->CheckReply(rep);
-	}
-
-	vector<string> GetACL(const string& user, const string& service)
-	{
-		Json::Value cmd(Json::objectValue);
-
-		cmd["cmd"]		= "getacl";
-		cmd["username"]	= user;
-		cmd["servicename"]	= service;
-
-		Json::Value rep = this->DoCall(cmd);
-
-		vector<string> acl;
-		if( this->CheckReply(rep) )
-		{
-			for(auto x: rep["acl"])
-			{
-				acl.push_back(x.asString() );
-			}
-		}
-		return acl;
-	}
-
-	bool AddACL(const string& user, const string& service, const string& acl)
-	{
-		Json::Value cmd(Json::objectValue);
-
-		cmd["cmd"]			= "addacl";
-		cmd["username"]		= user;
-		cmd["servicename"]	= service;
-		cmd["acl"]			= acl;
-
-		Json::Value rep = this->DoCall(cmd);
-
-		return this->CheckReply(rep);
-	}
-
-	bool RemoveACL(const string& user, const string& service, const string& acl)
-	{
-		Json::Value cmd(Json::objectValue);
-
-		cmd["cmd"]			= "removeacl";
-		cmd["username"]		= user;
-		cmd["servicename"]	= service;
-		cmd["acl"]			= acl;
-
-		Json::Value rep = this->DoCall(cmd);
-
-		return this->CheckReply(rep);
-	}
-
-	bool HasACL(const string& user, const string& service, const string& acl)
-	{
-		Json::Value cmd(Json::objectValue);
-
-		cmd["cmd"]			= "hasacl";
-		cmd["username"]		= user;
-		cmd["servicename"]	= service;
-		cmd["acl"]			= acl;
-
-		Json::Value rep = this->DoCall(cmd);
-		bool ret = false;
-
-		if ( this->CheckReply(rep) )
-		{
-			ret = rep["hasacl"].asBool();
-		}
-
-		return ret;
-	}
-
-	/* Limited, can only add key value string pairs */
-	bool AddIdentifier(const string& user, const string& service, const map<string,string>& identifier)
-	{
-		Json::Value cmd(Json::objectValue);
-
-		cmd["cmd"]			= "addidentifier";
-		cmd["username"]		= user;
-		cmd["servicename"]	= service;
-
-		for(const auto& x: identifier)
-		{
-			cmd["identifier"][ x.first ] = x.second;
-		}
-
-		Json::Value rep = this->DoCall(cmd);
-
-		return this->CheckReply(rep);
-	}
-
-	/* Identifier has to contain user &| service */
-	bool RemoveIdentifier(const string& user, const string& service, const map<string,string>& identifier)
-	{
-		Json::Value cmd(Json::objectValue);
-
-		cmd["cmd"]			= "removeidentifier";
-		cmd["username"]		= user;
-		cmd["servicename"]	= service;
-
-		for(const auto& x: identifier)
-		{
-			cmd["identifier"][ x.first ] = x.second;
-		}
-
-		Json::Value rep = this->DoCall(cmd);
-
-		return this->CheckReply(rep);
-	}
-
-	list<map<string,string>> GetIdentifiers(const string& user, const string& service)
-	{
-		Json::Value cmd(Json::objectValue);
-
-		cmd["cmd"]			= "getidentifiers";
-		cmd["username"]		= user;
-		cmd["servicename"]	= service;
-
-		Json::Value rep = this->DoCall(cmd);
-
-		list<map<string,string> > ret;
-		//logg << Logger::Debug << rep.toStyledString()<< lend;
-		if ( this->CheckReply(rep) )
-		{
-			for( auto x: rep["identifiers"] )
-			{
-				Json::Value::Members mems = x.getMemberNames();
-				map<string,string> id;
-				for( auto mem: mems)
-				{
-					id[ mem ] = x[mem].asString();
-				}
-				ret.push_back( id );
-			}
-		}
-
-		return ret;
-	}
-
-	virtual ~SecopHelper()
-	{
-
-	}
-protected:
-	Json::Value DoCall(Json::Value& cmd)
-	{
-		cmd["tid"]=this->tid;
-		cmd["version"]=1.0;
-		string r = this->writer.write( cmd );
-
-		this->secop.Write(r.c_str(), r.size() );
-
-		char buf[16384];
-		int rd;
-
-		Json::Value resp;
-
-		if( ( rd = this->secop.Read( buf, sizeof(buf) ) ) > 0  )
-		{
-
-			if( ! this->reader.parse( buf, buf+rd, resp ) )
-			{
-				logg << Logger::Error << "Failed to parse response"<<lend;
-			}
-
-		}
-
-		return resp;
-	}
-
-	bool CheckReply( const Json::Value& val )
-	{
-		bool ret = false;
-
-		if( val.isMember("status") && val["status"].isObject() )
-		{
-			ret = val["status"]["value"].asInt() == 0;
-		}
-
-		return ret;
-	}
-
-
-	int tid;
-private:
-	UnixStreamClientSocket secop;
-	Json::FastWriter writer;
-	Json::Reader reader;
-};
-
-
 AuthProxy::AuthProxy(const string &socketpath):
 	Utils::Net::NetServer(UnixStreamServerSocketPtr( new UnixStreamServerSocket(socketpath)), 0)
 {
@@ -376,8 +28,9 @@ AuthProxy::AuthProxy(const string &socketpath):
 
 void AuthProxy::HandleHello(UnixStreamClientSocketPtr sock, const string &line)
 {
+	(void) sock;
+	(void) line;
 	logg << Logger::Debug << "Got hello from server " << lend;
-
 }
 
 
@@ -432,20 +85,31 @@ string AuthProxy::HashPassword(const string &pwd)
 void AuthProxy::SendReply(UnixStreamClientSocketPtr sock, const Json::Value &val)
 {
 	string res = "O"+writer.write(val);
-	//logg << Logger::Debug << "Write response ["<< res << "]" << lend;
-	sock->Write( res.c_str(), res.size() );
+	try
+	{
+		sock->Write( res.c_str(), res.size() );
+	}
+	catch(ErrnoException &e)
+	{
+		logg << Logger::Info << "Failed to send reply: " << e.what() << lend;
+	}
 }
 
 void AuthProxy::SendError(UnixStreamClientSocketPtr sock)
 {
-	sock->Write("F\n", 2);
+	try
+	{
+		sock->Write("F\n", 2);
+	}
+	catch(ErrnoException &e)
+	{
+		logg << Logger::Info << "Failed to send error reply: " << e.what() << lend;
+	}
 }
 
 void AuthProxy::HandlePassdb(UnixStreamClientSocketPtr sock, const string &line)
 {
-	//logg << Logger::Debug << "Passdb lookup " << line << lend;
-
-	SecopHelper sec;
+	OPI::Secop sec;
 
 	sec.SockAuth();
 
@@ -486,8 +150,6 @@ void AuthProxy::HandlePassdb(UnixStreamClientSocketPtr sock, const string &line)
  */
 void AuthProxy::HandleUserdb(UnixStreamClientSocketPtr sock, const string &line)
 {
-	//logg << Logger::Debug << "Userdb lookup " << line << lend;
-
 	Json::Value reply;
 
 	reply["home"]	= "/var/opi/mail/data/"+line+"/home";
@@ -545,8 +207,24 @@ void AuthProxy::Dispatch(SocketPtr con)
 	char buf[1024];
 	size_t rd;
 
-	while( (rd = sock->Read( buf, sizeof(buf) - 1 ) ) > 0  )
+	do
 	{
+		try
+		{
+			rd = sock->Read( buf, sizeof(buf) - 1 );
+		}
+		catch(ErrnoException &e)
+		{
+			logg << Logger::Error << "Failed to read request from client: "<<e.what()<<lend;
+			this->decreq();
+			return;
+		}
+
+		if( rd <= 0 )
+		{
+			break;
+		}
+
 		vector<string> lines;
 
 		buf[rd] = 0;
@@ -554,7 +232,6 @@ void AuthProxy::Dispatch(SocketPtr con)
 		String::Split(buf, lines, "\n");
 		for(auto& line: lines)
 		{
-			//cout << "Line ["<<line <<"]"<<endl;
 			if( line.size() > 0 )
 			{
 				switch(line[0])
@@ -572,7 +249,7 @@ void AuthProxy::Dispatch(SocketPtr con)
 			}
 		}
 
-	}
+	}while( rd > 0 );
 
 	this->decreq();
 }

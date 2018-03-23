@@ -1,3 +1,12 @@
+opi-authproxy (1.3) vili; urgency=medium
+
+  * Use systemd init instead of sysv
+  * Use libopis secop wrapper instead of internal copy
+  * Use info log level by default and log to syslog
+  * Try catch more exceptions in client communication
+
+ -- Tor Krill <tor@openproducts.se>  Fri, 23 Mar 2018 14:12:29 +0100
+
 opi-authproxy (1.2) vili; urgency=medium
 
   * Update socket path
