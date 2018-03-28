@@ -1,3 +1,10 @@
+opi-authproxy (1.4) vili; urgency=medium
+
+  * Restart sercvice upon failure
+  * Add license and readme
+
+ -- Tor Krill <tor@openproducts.se>  Wed, 28 Mar 2018 18:56:53 +0200
+
 opi-authproxy (1.3) vili; urgency=medium
 
   * Use systemd init instead of sysv

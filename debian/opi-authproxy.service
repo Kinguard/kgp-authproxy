@@ -6,5 +6,6 @@ Requires=secop.service
 Type=forking
 PIDFile=/var/run/opi-authproxy.pid
 ExecStart=/usr/sbin/opi-authproxy -d
+Restart=on-failure
 
 # No install target since opi-authproxy is started by opi-control
