@@ -1,3 +1,9 @@
+opi-authproxy (1.5) vili; urgency=medium
+
+  * Return error upon caught exception on top level. Hopefully fixes #438
+
+ -- Tor Krill <tor@openproducts.se>  Tue, 22 May 2018 15:21:26 +0000
+
 opi-authproxy (1.4) vili; urgency=medium
 
   * Restart sercvice upon failure
