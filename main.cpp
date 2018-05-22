@@ -26,6 +26,7 @@ int main(int argc, char** argv)
 	catch( std::runtime_error& err)
 	{
 		logg << Logger::Error << "Caught exception: "<< err.what()<<lend;
+		ret = 1;
 	}
 
 
