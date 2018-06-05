@@ -109,11 +109,22 @@ void AuthProxy::SendError(UnixStreamClientSocketPtr sock)
 
 void AuthProxy::HandlePassdb(UnixStreamClientSocketPtr sock, const string &line)
 {
-	OPI::Secop sec;
+	list<map<string,string>> ids;
+	// User might not exist in secop and then an exception will get thrown
+	try
+	{
+		OPI::Secop sec;
 
-	sec.SockAuth();
+		sec.SockAuth();
 
-	list<map<string,string>> ids = sec.GetIdentifiers( line, "opiuser");
+		ids = sec.GetIdentifiers( line, "opiuser");
+	}
+	catch(std::runtime_error& e)
+	{
+		logg << Logger::Error << "Retrieve identifiers for user " << line << " failed ("<<e.what()<<")"<<lend;
+		this->SendError(sock);
+		return;
+	}
 
 	if( ids.size() == 0 )
 	{
