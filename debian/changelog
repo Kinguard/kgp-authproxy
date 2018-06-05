@@ -1,3 +1,9 @@
+opi-authproxy (1.6) vili; urgency=medium
+
+  * Catch exception from secop preventing app terminationon on missing user
+
+ -- Tor Krill <tor@openproducts.se>  Tue, 05 Jun 2018 08:30:03 +0000
+
 opi-authproxy (1.5) vili; urgency=medium
 
   * Return error upon caught exception on top level. Hopefully fixes #438
