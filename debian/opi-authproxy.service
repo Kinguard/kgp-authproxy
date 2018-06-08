@@ -1,6 +1,6 @@
 [Unit]
 Description=IMAP authentication proxy
-Requires=secop.service
+Wants=secop.service
 
 [Service]
 Type=forking
