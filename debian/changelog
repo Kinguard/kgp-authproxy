@@ -1,3 +1,9 @@
+opi-authproxy (1.7) vili; urgency=medium
+
+  * Add install target to let systemd start application instead of opi-control
+
+ -- Tor Krill <tor@openproducts.se>  Fri, 08 Jun 2018 09:44:51 +0000
+
 opi-authproxy (1.6) vili; urgency=medium
 
   * Catch exception from secop preventing app terminationon on missing user
