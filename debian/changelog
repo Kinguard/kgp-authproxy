@@ -1,3 +1,9 @@
+opi-authproxy (1.9) vili; urgency=medium
+
+  * Lintian fixes
+
+ -- Tor Krill <tor@openproducts.se>  Tue, 04 Jun 2019 11:02:40 +0200
+
 opi-authproxy (1.8) vili; urgency=medium
 
   * Losen systemd dep on secop to allow authproxy to start separately

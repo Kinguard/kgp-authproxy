@@ -9,8 +9,5 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-#override_dh_installinit:
-#	dh_installinit -- stop 20 0 1 6 .
-
 %:
 	dh $@ --with=systemd

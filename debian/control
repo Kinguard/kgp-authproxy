@@ -12,10 +12,12 @@ Build-Depends: debhelper (>= 8.0.0), cmake, dh-systemd (>= 1.5),
 	libutils-dev,
 	libjsoncpp-dev,
 	pkg-config
-Standards-Version: 3.9.4
+Standards-Version: 3.9.8
 Homepage: http://www.openproducts.com
 
 Package: opi-authproxy
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: OPI Authproxy proxies between secop and dovecot 
+Description: OPI Authproxy proxies between secop and Dovecot 
+ OPI Authproxy implements a secop authorization proxy for
+ Dovecot
