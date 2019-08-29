@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Tor Krill <tor@openproducts.se>
 Build-Depends: debhelper (>= 8.0.0), cmake, dh-systemd (>= 1.5),
 	libcryptsetup-dev,
-	libparted0-dev,
+	libparted-dev,
 	libcurl4-gnutls-dev,
 	libcrypto++-dev,
 	libssl-dev,

@@ -1,3 +1,9 @@
+opi-authproxy (1.10) vili; urgency=medium
+
+  * Buster adaptations
+
+ -- Tor Krill <tor@openproducts.se>  Thu, 29 Aug 2019 10:27:23 +0200
+
 opi-authproxy (1.9) vili; urgency=medium
 
   * Lintian fixes
