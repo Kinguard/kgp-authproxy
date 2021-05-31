@@ -4,7 +4,7 @@ Wants=secop.service
 
 [Service]
 Type=forking
-PIDFile=/var/run/opi-authproxy.pid
+PIDFile=/run/opi-authproxy.pid
 ExecStart=/usr/sbin/opi-authproxy -d
 Restart=on-failure
 

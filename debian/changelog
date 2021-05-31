@@ -1,3 +1,9 @@
+opi-authproxy (1.11) vili; urgency=medium
+
+  * Move pid file to /run
+
+ -- Tor Krill <tor@openproducts.se>  Mon, 31 May 2021 15:19:00 +0200
+
 opi-authproxy (1.10) vili; urgency=medium
 
   * Buster adaptations
