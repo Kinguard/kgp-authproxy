@@ -6,8 +6,6 @@
 
 #include <libopi/Secop.h>
 
-#include <json/json.h>
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -26,7 +24,7 @@ AuthProxy::AuthProxy(const string &socketpath):
 {
 }
 
-void AuthProxy::HandleHello(UnixStreamClientSocketPtr sock, const string &line)
+void AuthProxy::HandleHello(const UnixStreamClientSocketPtr& sock, const string &line)
 {
 	(void) sock;
 	(void) line;
@@ -75,16 +73,16 @@ string AuthProxy::HashPassword(const string &pwd)
 		ret << valid[  buf[i] % valid.size() ];
 	}
 
-	struct crypt_data data;
+	struct crypt_data data{};
 
 	data.initialized = 0;
 
 	return crypt_r( pwd.c_str() ,ret.str().c_str(), &data);
 }
 
-void AuthProxy::SendReply(UnixStreamClientSocketPtr sock, const Json::Value &val)
+void AuthProxy::SendReply(const UnixStreamClientSocketPtr& sock, const json &val)
 {
-	string res = "O"+writer.write(val);
+	string res = "O"+val.dump();
 	try
 	{
 		sock->Write( res.c_str(), res.size() );
@@ -95,7 +93,7 @@ void AuthProxy::SendReply(UnixStreamClientSocketPtr sock, const Json::Value &val
 	}
 }
 
-void AuthProxy::SendError(UnixStreamClientSocketPtr sock)
+void AuthProxy::SendError(const UnixStreamClientSocketPtr& sock)
 {
 	try
 	{
@@ -107,7 +105,7 @@ void AuthProxy::SendError(UnixStreamClientSocketPtr sock)
 	}
 }
 
-void AuthProxy::HandlePassdb(UnixStreamClientSocketPtr sock, const string &line)
+void AuthProxy::HandlePassdb(const UnixStreamClientSocketPtr& sock, const string &line)
 {
 	list<map<string,string>> ids;
 	// User might not exist in secop and then an exception will get thrown
@@ -140,13 +138,13 @@ void AuthProxy::HandlePassdb(UnixStreamClientSocketPtr sock, const string &line)
 		return;
 	}
 
-	Json::Value reply;
+	json reply;
 	reply["password"] = this->HashPassword( ids.front()["password"] );
 	reply["userdb_home"] = "/var/opi/mail/data/"+line+"/home";
 	reply["userdb_uid"]  = 5000;
 	reply["userdb_gid"]  = 5000;
 
-	if( reply["password"].asString() == "" )
+	if( reply["password"].get<string>() == "" )
 	{
 		logg << Logger::Error << "Unable to hash password"<<lend;
 		this->SendError(sock);
@@ -159,9 +157,9 @@ void AuthProxy::HandlePassdb(UnixStreamClientSocketPtr sock, const string &line)
 /*
  *TODO: Check with Secop if user exists
  */
-void AuthProxy::HandleUserdb(UnixStreamClientSocketPtr sock, const string &line)
+void AuthProxy::HandleUserdb(const UnixStreamClientSocketPtr& sock, const string &line)
 {
-	Json::Value reply;
+	json reply;
 
 	reply["home"]	= "/var/opi/mail/data/"+line+"/home";
 	reply["uid"]	= 5000;
@@ -170,7 +168,7 @@ void AuthProxy::HandleUserdb(UnixStreamClientSocketPtr sock, const string &line)
 	this->SendReply(sock, reply);
 }
 
-void AuthProxy::HandleLookup(UnixStreamClientSocketPtr sock, const string &line)
+void AuthProxy::HandleLookup(const UnixStreamClientSocketPtr& sock, const string &line)
 {
 	logg << Logger::Debug << "Got lookup from server " << lend;
 
@@ -263,8 +261,4 @@ void AuthProxy::Dispatch(SocketPtr con)
 	}while( rd > 0 );
 
 	this->decreq();
-}
-
-AuthProxy::~AuthProxy()
-{
 }

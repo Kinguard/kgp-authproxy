@@ -16,14 +16,12 @@ class ProxyApp : public Utils::DaemonApplication
 public:
 	ProxyApp();
 
-	virtual void Startup();
-	virtual void Main();
-	virtual void ShutDown();
+	void Startup() override;
+	void Main() override;
+	void ShutDown() override;
 
 	void SigTerm(int signo);
 	void SigHup(int signo);
-
-	virtual ~ProxyApp();
 protected:
 	AuthProxyPtr proxy;
 };

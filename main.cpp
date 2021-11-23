@@ -3,7 +3,6 @@
 
 #include "ProxyApp.h"
 
-
 #include <libutils/Logger.h>
 
 using namespace std;

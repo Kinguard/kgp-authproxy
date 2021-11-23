@@ -24,6 +24,7 @@ void ProxyApp::SigTerm(int signo)
 
 void ProxyApp::SigHup(int signo)
 {
+	(void) signo;
 	// TODO: Perhaps reload any config
 }
 
@@ -73,11 +74,6 @@ void ProxyApp::Main()
 }
 
 void ProxyApp::ShutDown()
-{
-
-}
-
-ProxyApp::~ProxyApp()
 {
 
 }

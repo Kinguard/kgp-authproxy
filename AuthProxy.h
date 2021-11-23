@@ -5,33 +5,31 @@
 #include <memory>
 
 #include <libutils/NetServer.h>
-#include <json/json.h>
+#include <nlohmann/json.hpp>
 
 using namespace std;
 using namespace Utils::Net;
+
+using json = nlohmann::json;
 
 class AuthProxy : public Utils::Net::NetServer
 {
 public:
 	AuthProxy(const string& socketpath);
 
-	virtual void Dispatch(SocketPtr con);
+	void Dispatch(SocketPtr con) override;
 
-	virtual ~AuthProxy();
 private:
-	void HandleHello(UnixStreamClientSocketPtr sock, const string& line);
+	void HandleHello(const UnixStreamClientSocketPtr& sock, const string& line);
 
-	void SendReply(UnixStreamClientSocketPtr sock, const Json::Value& val);
-	void SendError(UnixStreamClientSocketPtr sock);
+	void SendReply(const UnixStreamClientSocketPtr& sock, const json& val);
+	void SendError(const UnixStreamClientSocketPtr& sock);
 
-	void HandlePassdb(UnixStreamClientSocketPtr sock, const string& line);
-	void HandleUserdb(UnixStreamClientSocketPtr sock, const string& line);
-	void HandleLookup(UnixStreamClientSocketPtr sock, const string& line);
+	void HandlePassdb(const UnixStreamClientSocketPtr& sock, const string& line);
+	void HandleUserdb(const UnixStreamClientSocketPtr& sock, const string& line);
+	void HandleLookup(const UnixStreamClientSocketPtr& sock, const string& line);
 
 	string HashPassword(const string& pwd);
-
-	Json::FastWriter writer;
-
 };
 
 typedef std::shared_ptr<AuthProxy> AuthProxyPtr;

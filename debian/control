@@ -2,14 +2,13 @@ Source: opi-authproxy
 Section: mail
 Priority: optional
 Maintainer: Tor Krill <tor@openproducts.se>
-Build-Depends: debhelper (>= 8.0.0), cmake, dh-systemd (>= 1.5),
+Build-Depends: debhelper (>= 12.0.0), cmake,
 	libcryptsetup-dev,
 	libparted-dev,
 	libcrypto++-dev,
 	libssl-dev,
-	libopi-dev (>= 1.6.0),
+	libopi-dev (>= 1.6.60),
 	libutils-dev,
-	libjsoncpp-dev,
 	pkg-config
 Standards-Version: 3.9.8
 Homepage: http://www.openproducts.com
