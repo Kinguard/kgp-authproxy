@@ -82,7 +82,7 @@ string AuthProxy::HashPassword(const string &pwd)
 
 void AuthProxy::SendReply(const UnixStreamClientSocketPtr& sock, const json &val)
 {
-	string res = "O"+val.dump();
+	string res = "O"+val.dump()+"\n";
 	try
 	{
 		sock->Write( res.c_str(), res.size() );
